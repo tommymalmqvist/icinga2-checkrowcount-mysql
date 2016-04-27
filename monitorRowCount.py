@@ -2,8 +2,12 @@
 
 import pymysql.cursors
 import pymysql
+import sys
 from optparse import OptionParser
 
+OK = 0
+WARNING = 1
+CRITICAL = 2
 
 def main():
     parser = OptionParser(usage="usage: %prog [options] host",
@@ -70,10 +74,13 @@ def main():
 
     if rows >= options.critical:
         print "CRITICAL: " + str(rows)
+        sys.exit(CRITICAL)
     elif rows >= options.warning:
         print "WARNING: " + str(rows)
+        sys.exit(WARNING)
     else:
         print "OK: " + str(rows)
+        sys.exit(OK)
 
 if __name__ == '__main__':
     main()
