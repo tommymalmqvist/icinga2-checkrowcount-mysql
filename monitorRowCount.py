@@ -6,38 +6,32 @@ from optparse import OptionParser
 
 
 def main():
-    parser = OptionParser(usage="usage: %prog -h <host> -u <user> -p <password> -d <database> -t <table> -w <warn> -c <crit>",
+    parser = OptionParser(usage="usage: %prog [options] host",
     version="%prog 1.0")
 
-    parser.add_option("-H", "--host",
-    	action="store",
-    	type="string",
-    	dest="host",
-    	help="host",
-    	metavar="HOST")
     parser.add_option("-u", "--user",
-    	action="store", type="string",
-    	dest="user",
-    	help="database username",
-    	metavar="USER")
+        action="store", type="string",
+        dest="user",
+        help="database username",
+        metavar="USER")
     parser.add_option("-p", "--password",
-    	action="store",
-    	type="string",
-    	dest="pass",
-    	help="database password",
-    	metavar="PASS")
+        action="store",
+        type="string",
+        dest="password",
+        help="database password",
+        metavar="PASSWORD")
     parser.add_option("-d", "--database",
-    	action="store",
-    	type="string",
-    	dest="db",
-    	help="database name",
-    	metavar="DB")
+        action="store",
+        type="string",
+        dest="db",
+        help="database name",
+        metavar="DB")
     parser.add_option("-t", "--table",
-    	action="store",
-    	type="string",
-    	dest="table",
-    	help="table name",
-    	metavar="TABLE")
+        action="store",
+        type="string",
+        dest="table",
+        help="table name",
+        metavar="TABLE")
     parser.add_option("-w", "--warning",
         action="store",
         type="int",
@@ -52,10 +46,13 @@ def main():
         metavar="CRITICAL")
     (options, args) = parser.parse_args()
 
+    if len(args) != 1:
+        parser.error("incorrect number of arguments.")
+
     # Connect to the database
-    connection = pymysql.connect(host=options.host,
+    connection = pymysql.connect(host=args[0],
     user=options.user,
-    password=options.user,
+    password=options.password,
     db=options.db,
     charset='utf8mb4',
     cursorclass=pymysql.cursors.DictCursor)
@@ -72,11 +69,11 @@ def main():
     rows = result['COUNT(*)']
 
     if rows >= options.critical:
-    	print "CRITICAL: " + str(rows)	
+        print "CRITICAL: " + str(rows)
     elif rows >= options.warning:
-    	print "WARNING: " + str(rows)
+        print "WARNING: " + str(rows)
     else:
-    	print "OK: " + str(rows)
+        print "OK: " + str(rows)
 
 if __name__ == '__main__':
     main()
